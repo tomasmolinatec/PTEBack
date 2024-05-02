@@ -19,8 +19,8 @@ async function connectToDB() {
     host: 'db-mysql-protect-the-eggs-do-user-1690389-0.c.db.ondigitalocean.com',
     user: 'protect-the-eggs-user',
     password: 'AVNS_PXvgO4qupeeAdcv5fwO',
-    //password: "Tec12345!",
     database: 'protect-the-eggs-db',
+    port: 25060,
   });
 }
 
