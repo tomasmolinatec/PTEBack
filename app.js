@@ -26,7 +26,7 @@ async function connectToDB() {
 
 app.get('/', (request, response) => {
   console.log('Loading page...');
-  fs.readFile('titulo.html', 'utf8', (err, html) => {
+  fs.readFile('./index.html', 'utf8', (err, html) => {
     if (err) response.status(500).send(`There was an error: ${err}`);
     console.log('Loading page...');
     response.send(html);
@@ -35,7 +35,7 @@ app.get('/', (request, response) => {
 
 app.get('/leaderboard', (request, response) => {
   console.log('Loading page...');
-  fs.readFile('leaderboard.html', 'utf8', (err, html) => {
+  fs.readFile('./leaderboard.html', 'utf8', (err, html) => {
     if (err) response.status(500).send(`There was an error: ${err}`);
     console.log('Loading page...');
     response.send(html);
@@ -44,7 +44,7 @@ app.get('/leaderboard', (request, response) => {
 
 app.get('/creditos', (request, response) => {
   console.log('Loading page...');
-  fs.readFile('creditos.html', 'utf8', (err, html) => {
+  fs.readFile('./creditos.html', 'utf8', (err, html) => {
     if (err) response.status(500).send(`There was an error: ${err}`);
     console.log('Loading page...');
     response.send(html);
@@ -53,7 +53,7 @@ app.get('/creditos', (request, response) => {
 
 app.get('/how_to_play', (request, response) => {
   console.log('Loading page...');
-  fs.readFile('how_to_play.html', 'utf8', (err, html) => {
+  fs.readFile('./how_to_play.html', 'utf8', (err, html) => {
     if (err) response.status(500).send(`There was an error: ${err}`);
     console.log('Loading page...');
     response.send(html);
@@ -62,7 +62,7 @@ app.get('/how_to_play', (request, response) => {
 
 app.get('/game', (request, response) => {
   console.log('Loading page...');
-  fs.readFile('index.html', 'utf8', (err, html) => {
+  fs.readFile('./game.html', 'utf8', (err, html) => {
     if (err) response.status(500).send(`There was an error: ${err}`);
     console.log('Loading page...');
     response.send(html);
@@ -92,12 +92,12 @@ app.get('/api/usuarios/:username/:password', async (request, response) => {
         .status(200)
         .json({ Success: false, Error: 'Username doesnt exist.' });
     } else if (
-      results[0]['NombreUsuario'] === request.params.username &&
-      results[0]['Contraseña'] === request.params.password
+      results[0].NombreUsuario === request.params.username &&
+      results[0].Contraseña === request.params.password
     ) {
       console.log('Access granted.\n');
       response.status(200).json({ Success: true });
-    } else if (results[0]['NombreUsuario'] === request.params.username) {
+    } else if (results[0].NombreUsuario === request.params.username) {
       console.log('Wrong password.\n');
       response.status(200).json({ Success: false, Error: 'Wrong password.' });
     }
@@ -179,7 +179,7 @@ app.get('/api/card', async (request, response) => {
     //console.log(ids);
     const cartas = { Cartas: [] };
     for (let i = 0; i < ids.length; i++) {
-      const results = await getCardFormat(ids[i]['IDCarta']);
+      const results = await getCardFormat(ids[i].IDCarta);
       cartas.Cartas.push(results);
     }
 
@@ -243,14 +243,14 @@ app.get('/api/mazo/:username', async (request, response) => {
         [mazos[i].NombreMazo]
       );
 
-      mazos[i]['Datos'] = [];
+      mazos[i].Datos = [];
       //console.log(datosmazo[0]);
 
       //mazos[i]["Datos"].push( datosmazo[0]) ;
       for (let j = 0; j < datosmazo.length; j++) {
-        datosmazo[j]['Carta'] = await getCardFormat(datosmazo[j]['IDCarta']);
-        delete datosmazo[j]['IDCarta'];
-        mazos[i]['Datos'].push(structuredClone(datosmazo[j]));
+        datosmazo[j].Carta = await getCardFormat(datosmazo[j].IDCarta);
+        datosmazo[j].IDCarta = undefined;
+        mazos[i].Datos.push(structuredClone(datosmazo[j]));
       }
     }
     console.log(mazos);
