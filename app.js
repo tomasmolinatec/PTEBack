@@ -1,12 +1,12 @@
-
-
 import fs from 'node:fs';
+import cors from 'cors';
 import express from 'express';
 import mysql from 'mysql2/promise';
 const app = express();
 const port = 4200;
 
 app.use(express.json());
+app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('/'));
 
@@ -67,7 +67,9 @@ app.get('/api/usuarios/:username/:password', async (request, response) => {
     );
 
     if (results[0] === undefined) {
-      response.status(200).json({ Success: false, Error: 'Username doesnt exist.' });
+      response
+        .status(200)
+        .json({ Success: false, Error: 'Username doesnt exist.' });
     } else if (
       results[0].NombreUsuario === request.params.username &&
       results[0].Contraseña === request.params.password
@@ -100,9 +102,13 @@ app.post('/api/usuarios/', async (request, response) => {
     );
 
     if (results[0] !== undefined) {
-      response.status(200).json({ Success: false, Error: 'Username already exists.' });
+      response
+        .status(200)
+        .json({ Success: false, Error: 'Username already exists.' });
     } else if (username.length > 40 || password.length > 40) {
-      response.status(200).json({ Success: false, Error: 'Invalid username or password.' });
+      response
+        .status(200)
+        .json({ Success: false, Error: 'Invalid username or password.' });
     } else {
       const [results2, fields2] = await connection.execute(
         'INSERT INTO Usuarios (NombreUsuario, Contraseña) VALUES (?, ?);',
@@ -203,7 +209,7 @@ app.post('/api/CreateDeck', async (req, res) => {
   try {
     connection = await connectToDB();
     const username = req.body.username;
-    const cards = req.body.cards; 
+    const cards = req.body.cards;
 
     await connection.beginTransaction();
 
@@ -225,7 +231,9 @@ app.post('/api/CreateDeck', async (req, res) => {
 
     let deckID;
     if (decks.length >= 5) {
-      res.status(200).json({ Success: false, Error: 'Too many decks for one user.' });
+      res
+        .status(200)
+        .json({ Success: false, Error: 'Too many decks for one user.' });
     } else if (decks.length < 5) {
       const [newDeckResult] = await connection.execute(
         'INSERT INTO Mazos (IDUsuario, NombreMazo) VALUES (?, ?);',
@@ -246,7 +254,7 @@ app.post('/api/CreateDeck', async (req, res) => {
     res.status(200).json({ Success: true, DeckID: deckID });
   } catch (error) {
     if (connection) {
-      await connection.rollback(); 
+      await connection.rollback();
     }
     res.status(500).json({ Success: false, Error: error.message });
   } finally {
@@ -271,7 +279,7 @@ app.delete('/api/mazo/:id', async (req, res) => {
     res.status(200).send('Success!');
   } catch (error) {
     if (connection) {
-      await connection.rollback(); 
+      await connection.rollback();
     }
     res.status(500).json({ Success: false, Error: error.message });
   } finally {
@@ -287,7 +295,7 @@ app.put('/api/EditDeck/:id', async (req, res) => {
     connection = await connectToDB();
     const id = req.params.id;
     const username = req.body.username;
-    const cards = req.body.cards; 
+    const cards = req.body.cards;
 
     await connection.beginTransaction();
 
@@ -323,7 +331,7 @@ app.put('/api/EditDeck/:id', async (req, res) => {
     res.status(200).json({ Success: true });
   } catch (error) {
     if (connection) {
-      await connection.rollback(); 
+      await connection.rollback();
     }
     res.status(500).json({ Success: false, Error: error.message });
   } finally {
@@ -353,12 +361,12 @@ async function getCardFormat(cardID) {
     );
 
     const cardData = {
-      ID: cardResults[0].IDCarta, 
+      ID: cardResults[0].IDCarta,
       cardName: cardResults[0].cardName,
       description: cardResults[0].description,
       cost: cardResults[0].cost,
       numberOfNPCs: cardResults[0].numberOfNPCs,
-      stats: statsResults[0], 
+      stats: statsResults[0],
     };
 
     return cardData;
@@ -367,7 +375,7 @@ async function getCardFormat(cardID) {
     return {};
   } finally {
     if (connection) {
-      connection.end(); 
+      connection.end();
     }
   }
 }
