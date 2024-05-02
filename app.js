@@ -1,9 +1,11 @@
+'use strict;';
+
 import fs from 'node:fs';
 // Importing modules
 import express from 'express';
 import mysql from 'mysql2/promise';
 const app = express();
-const port = 3000;
+const port = 4200;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
